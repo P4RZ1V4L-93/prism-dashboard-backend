@@ -48,6 +48,10 @@ The API will be accessible at http://localhost:8000
 * POST /data/add: Add power consumption data for a specific device category.
 * GET /docs: To see the api documentation
 
+## Backend Architecture
+
+[Link to Backend Architecture](https://tinyurl.com/mah7nedd)
+
 ## Contributing
 1. Fork the repository
 2. Create a new branch (git checkout -b feature)
@@ -63,3 +67,5 @@ This project is license under [MIT](https://github.com/creatorGod003/prism-dashb
 * [FastAPI Documentation](https://fastapi.tiangolo.com/)
 * [Redis Documentation](https://redis.io/docs/) 
 * [SQLAlchemy Documentation](https://docs.sqlalchemy.org/en/20/)
+
+
