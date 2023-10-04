@@ -1,0 +1,36 @@
+# General Python and IDE files
+__pycache__/
+.vscode/
+.idea/
+
+# Environment folders
+venv/
+env/
+
+# Compiled Python files
+*.pyc
+*.pyo
+
+# Logs
+*.log
+
+# Database
+*.sqlite
+
+# Environment configuration files
+.env
+
+# Dependency directories
+lib/
+lib64/
+dist/
+build/
+bin/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Jupyter Notebook
+.ipynb_checkpoints/
