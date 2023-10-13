@@ -3,7 +3,7 @@
 '''
 
 # import necessary dependencies
-from fastapi import APIRouter, status, Depends
+from fastapi import APIRouter, status, Depends,UploadFile, File
 from fastapi.responses import HTMLResponse
 from fastapi_jwt_auth import AuthJWT
 from schemas import PowerConsumptionSchema, ResponseSchema, ErrorResonseSchema, StatisticsResonseSchema
@@ -17,6 +17,9 @@ import pandas as pd
 import ast
 import redis
 from init_redis import savePlot, saveStatistics
+import aiofiles
+import re
+import json
 
 # Create an APIRouter for data-related routes
 data_router = APIRouter(
@@ -80,9 +83,16 @@ def get_plot(category_name: str, Authorize:AuthJWT=Depends()):
                             detail=f"Category '{category_name}' not found")
 
     # fetching plot's json string from redis
-    response_bstring = redis_client.get(f'{category_name}_plot')
-    response_string = response_bstring.decode('utf-8')
-    response = {'graphJSON': response_string}
+    response_string = redis_client.get(f'{category_name}_plot')
+    response_list = json.loads(response_string)
+
+    response = {
+        "hourly_plot":response_list[0],
+        "daily_plot":response_list[1],
+        "weekly_plot":response_list[2],
+        "monthly_plot":response_list[3]
+    }
+    
     return jsonable_encoder(response)
 
 
@@ -126,3 +136,30 @@ async def add_data(dataPoint: PowerConsumptionSchema, Authorize: AuthJWT = Depen
     }
 
     return jsonable_encoder(response)
+
+
+@data_router.post("/process_csv")
+async def process_csv(file:UploadFile=File(...)):
+
+    pattern = re.compile(r'\.csv$')
+
+    if(not re.search(pattern, file.filename)):
+        raise HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE, detail="Not a CSV File")
+    
+    try:
+        async with aiofiles.open(f'uploads/{file.filename}', 'wb') as f:
+            while contents := await file.read(1024 * 1024):
+                await f.write(contents)
+        
+        stats = get_statistics(f'uploads/{file.filename}')
+        graphJSON = get_plot(f'uploads/{file.filename}')
+        print(stats)
+        print(graphJSON)
+        
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE,detail="There was an error uploading the file")
+        
+    finally:
+        await file.close()
+
+    return {"message": f"Successfully uploaded {file.filename}"}
