@@ -13,6 +13,7 @@ from fastapi.exceptions import HTTPException
 from werkzeug.security import generate_password_hash, check_password_hash
 from fastapi.encoders import jsonable_encoder
 from models import category_classes, categories
+from utils import get_plots, get_stats,delete_file
 import pandas as pd
 import ast
 import redis
@@ -20,6 +21,7 @@ from init_redis import savePlot, saveStatistics
 import aiofiles
 import re
 import json
+
 
 # Create an APIRouter for data-related routes
 data_router = APIRouter(
@@ -137,8 +139,7 @@ async def add_data(dataPoint: PowerConsumptionSchema, Authorize: AuthJWT = Depen
 
     return jsonable_encoder(response)
 
-
-@data_router.post("/process_csv")
+@data_router.post("/custom")
 async def process_csv(file:UploadFile=File(...)):
 
     pattern = re.compile(r'\.csv$')
@@ -151,15 +152,23 @@ async def process_csv(file:UploadFile=File(...)):
             while contents := await file.read(1024 * 1024):
                 await f.write(contents)
         
-        stats = get_statistics(f'uploads/{file.filename}')
-        graphJSON = get_plot(f'uploads/{file.filename}')
-        print(stats)
-        print(graphJSON)
+        list_of_plots_json = get_plots(f'uploads/{file.filename}')
+        stats = get_stats(f'uploads/{file.filename}')
         
+        response = {
+            "statistics": stats,
+            "plots":{
+                "hourly":list_of_plots_json[0],
+                "daily":list_of_plots_json[1],
+                "weekly":list_of_plots_json[2],
+                "monthly":list_of_plots_json[3],
+            }
+        }
+
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE,detail="There was an error uploading the file")
         
     finally:
         await file.close()
-
-    return {"message": f"Successfully uploaded {file.filename}"}
+        await delete_file(f'uploads/{file.filename}')
+    return jsonable_encoder(response)
