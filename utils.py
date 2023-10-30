@@ -13,8 +13,7 @@ mapping = {
     "monthly":"M"
 }
 
-def get_plots(file_path):
-
+def get_plots(df: pd.DataFrame):
 
     def update_trace(button):
             if button.label == 'Max':
@@ -25,8 +24,7 @@ def get_plots(file_path):
                 return [True, False, False]
             else:
                 return [True, True, True]
-                 
-    df = pd.read_csv(file_path)
+    
     df['timestamp'] = pd.to_datetime(df['timestamp'])
     df.set_index('timestamp', inplace=True)
     list_of_plots_json = []
@@ -64,8 +62,9 @@ def get_plots(file_path):
     
     return list_of_plots_json
 
-def get_stats(file_path):
-    df = pd.read_csv(file_path)
+
+def get_stats(df : pd.DataFrame):
+    
     stats_df = df["power"].describe()
     median = df["power"].median()
     stats = {

@@ -152,8 +152,10 @@ async def process_csv(file:UploadFile=File(...)):
             while contents := await file.read(1024 * 1024):
                 await f.write(contents)
         
-        list_of_plots_json = get_plots(f'uploads/{file.filename}')
-        stats = get_stats(f'uploads/{file.filename}')
+        df = pd.read_csv(f'uploads/{file.filename}')
+        list_of_plots_json = get_plots(df)
+        df = pd.read_csv(f'uploads/{file.filename}')
+        stats = get_stats(df)
         
         response = {
             "statistics": stats,
