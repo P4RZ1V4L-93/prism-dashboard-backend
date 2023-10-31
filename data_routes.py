@@ -86,14 +86,7 @@ def get_plot(category_name: str, Authorize:AuthJWT=Depends()):
 
     # fetching plot's json string from redis
     response_string = redis_client.get(f'{category_name}_plot')
-    response_list = json.loads(response_string)
-
-    response = {
-        "hourly_plot":response_list[0],
-        "daily_plot":response_list[1],
-        "weekly_plot":response_list[2],
-        "monthly_plot":response_list[3]
-    }
+    response = json.loads(response_string)
     
     return jsonable_encoder(response)
 
@@ -153,18 +146,12 @@ async def process_csv(file:UploadFile=File(...)):
                 await f.write(contents)
         
         df = pd.read_csv(f'uploads/{file.filename}')
-        list_of_plots_json = get_plots(df)
-        df = pd.read_csv(f'uploads/{file.filename}')
+        plots_json = get_plots(df)
         stats = get_stats(df)
         
         response = {
             "statistics": stats,
-            "plots":{
-                "hourly":list_of_plots_json[0],
-                "daily":list_of_plots_json[1],
-                "weekly":list_of_plots_json[2],
-                "monthly":list_of_plots_json[3],
-            }
+            "plots":plots_json
         }
 
     except Exception as e:
