@@ -43,13 +43,13 @@ def get_statistics(category_name: str, Authorize: AuthJWT = Depends()):
         - accessToken        
     """
     print('inside statistics route')
-    try:
-        # Check if the request is authorized with a valid JWT token
-        Authorize.jwt_required()
-    except Exception as e:
-        # If authorization fails, raise an HTTP 401 Unauthorized exception
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid Token")
+    # try:
+    #     # Check if the request is authorized with a valid JWT token
+    #     Authorize.jwt_required()
+    # except Exception as e:
+    #     # If authorization fails, raise an HTTP 401 Unauthorized exception
+    #     raise HTTPException(
+    #         status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid Token")
 
     if category_name not in categories:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
@@ -71,13 +71,13 @@ def get_plot(category_name: str, Authorize:AuthJWT=Depends()):
         - accessToken
     """
 
-    try:
-        # Check if the request is authorized with a valid JWT token
-        Authorize.jwt_required()
-    except Exception as e:
-        # If authorization fails, raise an HTTP 401 Unauthorized exception
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid Token")
+    # try:
+    #     # Check if the request is authorized with a valid JWT token
+    #     Authorize.jwt_required()
+    # except Exception as e:
+    #     # If authorization fails, raise an HTTP 401 Unauthorized exception
+    #     raise HTTPException(
+            # status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid Token")
 
     # check if category is valid device name
     if category_name not in categories:
@@ -102,13 +102,13 @@ async def add_data(dataPoint: PowerConsumptionSchema, Authorize: AuthJWT = Depen
         - accessToken
     """
 
-    try:
-        # Check if the request is authorized with a valid JWT token
-        Authorize.jwt_required()
-    except Exception as e:
-        # If authorization fails, raise an HTTP 401 Unauthorized exception
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid Token")
+    # try:
+    #     # Check if the request is authorized with a valid JWT token
+    #     Authorize.jwt_required()
+    # except Exception as e:
+    #     # If authorization fails, raise an HTTP 401 Unauthorized exception
+    #     raise HTTPException(
+    #         status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid Token")
 
     # Check if the specified category exists in category_classes dictionary
     if dataPoint.category not in category_classes:

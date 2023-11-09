@@ -33,7 +33,9 @@ def saveStatistics(category_name):
 def saveData():
     
     for category in categories:        
-        # saveStatistics(category)
+        saveStatistics(category)
         savePlot(category)
 
-# saveData()
+
+if(__name__ == '__main__'):
+    saveData()

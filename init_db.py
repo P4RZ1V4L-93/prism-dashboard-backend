@@ -6,4 +6,5 @@
 from database import engine,Base
 
 # Table creation
-Base.metadata.create_all(bind=engine)
+if(__name__ == '__main__'):
+    Base.metadata.create_all(bind=engine)
