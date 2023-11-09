@@ -3,8 +3,8 @@
 '''
 
 # Import necessary modules
-from database import engine,Base
+from database import engine, Base
 
 # Table creation
-if(__name__ == '__main__'):
+if (__name__ == '__main__'):
     Base.metadata.create_all(bind=engine)

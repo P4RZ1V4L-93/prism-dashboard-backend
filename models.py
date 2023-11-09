@@ -3,15 +3,17 @@
 '''
 
 from database import Base
-from sqlalchemy import Column,Integer,String,DateTime,Float
+from sqlalchemy import Column, Integer, String, DateTime, Float
 
 # Define a User class that inherits from the Base class
+
+
 class User(Base):
-    __tablename__='user'
-    id=Column(Integer,primary_key=True)
-    username=Column(String(25),unique=True)
-    email=Column(String(80),unique=True)
-    password=Column(String(),nullable=False)
+    __tablename__ = 'user'
+    id = Column(Integer, primary_key=True)
+    username = Column(String(25), unique=True)
+    email = Column(String(80), unique=True)
+    password = Column(String(), nullable=False)
 
     def __repr__(self):
         """
@@ -23,6 +25,8 @@ class User(Base):
         return f"<User {self.username}>"
 
 # Create a base class for ORM models related to power consumption
+
+
 class PowerConsumption(Base):
 
     """
@@ -46,7 +50,8 @@ class PowerConsumption(Base):
 category_classes = {}
 
 # Define a list of categories
-categories = ['printer3d', 'airconditioner', 'airpurifier', 'boiler', 'coffee', 'computer', 'dehumidifier', 'dishwasher', 'dryer', 'fan', 'freezer', 'fridge', 'internetrouter', 'laptop', 'microwaveoven', 'phonecharger', 'printer', 'radiator', 'screen', 'solarpanel', 'soundsystem', 'tv', 'vacuumcleaner', 'washingmachine']
+categories = ['printer3d', 'airconditioner', 'airpurifier', 'boiler', 'coffee', 'computer', 'dehumidifier', 'dishwasher', 'dryer', 'fan', 'freezer', 'fridge',
+              'internetrouter', 'laptop', 'microwaveoven', 'phonecharger', 'printer', 'radiator', 'screen', 'solarpanel', 'soundsystem', 'tv', 'vacuumcleaner', 'washingmachine']
 
 # Iterate through the categories and dynamically create classes and tables
 for category in categories:
@@ -61,6 +66,3 @@ class {class_name}(PowerConsumption):
 category_classes["{category}"] = {class_name}
     
 ''')
-
-
-

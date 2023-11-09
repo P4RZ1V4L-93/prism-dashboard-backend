@@ -46,10 +46,10 @@ def custom_openapi():
         return app.openapi_schema
 
     openapi_schema = get_openapi(
-        title = "Device Classification Dashboard API",
-        version = "1.0",
-        description = "This documentation provide end points for Device Classification dashboard.",
-        routes = app.routes,
+        title="Device Classification Dashboard API",
+        version="1.0",
+        description="This documentation provide end points for Device Classification dashboard.",
+        routes=app.routes,
     )
 
     openapi_schema["components"]["securitySchemes"] = {
@@ -66,7 +66,7 @@ def custom_openapi():
 
     for route in api_router:
         path = getattr(route, "path")
-        endpoint = getattr(route,"endpoint")
+        endpoint = getattr(route, "endpoint")
         methods = [method.lower() for method in getattr(route, "methods")]
 
         for method in methods:
@@ -83,6 +83,7 @@ def custom_openapi():
 
     app.openapi_schema = openapi_schema
     return app.openapi_schema
+
 
 # Assigning the custom OpenAPI function to app.openapi
 app.openapi = custom_openapi

@@ -5,7 +5,7 @@
 # Import necessary modules and dependencies
 from fastapi import APIRouter, status, Depends
 from fastapi_jwt_auth import AuthJWT
-from schemas import SignUpSchema, LoginSchema,SignUpResponseSchema,LoginResponseSchema, ErrorResonseSchema
+from schemas import SignUpSchema, LoginSchema, SignUpResponseSchema, LoginResponseSchema, ErrorResonseSchema
 from database import Session, engine
 from models import User
 from fastapi.exceptions import HTTPException
@@ -23,18 +23,19 @@ session = Session(bind=engine)
 
 
 # Define a FastAPI route for user registration (signup)
-@auth_router.post("/signup",response_model=SignUpResponseSchema, status_code=status.HTTP_201_CREATED, responses={400: {"description": "Bad Request", "model": ErrorResonseSchema}, 201: {"description": "Registered the user"}})
+@auth_router.post("/signup", response_model=SignUpResponseSchema, status_code=status.HTTP_201_CREATED, responses={400: {"description": "Bad Request", "model": ErrorResonseSchema}, 201: {"description": "Registered the user"}})
 def signup(user: SignUpSchema):
     """
         ## Register the User
         This endpoint requires the following
         - user: SignUpSchema
-        
+
     """
 
     # check if the provided email already exists in the database
     db_email = session.query(User).filter(User.email == user.email).first()
 
+    # check if email already exist in the database
     if (db_email is not None):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail="User with the email already exists")
@@ -43,12 +44,12 @@ def signup(user: SignUpSchema):
     db_username = session.query(User).filter(
         User.username == user.username).first()
 
+    # Check if username already exists in the database
     if (db_username is not None):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail="User with the username already exists")
 
     # create the new user
-
     new_user = User(
         username=user.username,
         email=user.email,
@@ -57,6 +58,7 @@ def signup(user: SignUpSchema):
 
     # add new user to table
     session.add(new_user)
+    # commiting the changes in the database
     session.commit()
 
     # response object
@@ -90,6 +92,7 @@ async def login(user: LoginSchema, Authorize: AuthJWT = Depends()):
         response = {
             "accessToken": access_token
         }
+        # return the response in json format
         return jsonable_encoder(response)
     else:
         # Return an error message if authentication fails
