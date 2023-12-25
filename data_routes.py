@@ -59,12 +59,17 @@ def get_statistics(category_name: str, Authorize: AuthJWT = Depends()):
     if category_name not in categories:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"Category '{category_name}' not found")
-    # fetching the statistics from desired category in form of byte string
-    response_bstring = redis_client.get(f'{category_name}_statistics')
-    # decoding the string in utf-8 format
-    response_string = response_bstring.decode('utf-8')
-    # evaluate the string and convert it to valid data structure
-    response = ast.literal_eval(response_string)
+    
+    try:
+        # fetching the statistics from desired category in form of byte string
+        response_bstring = redis_client.get(f'{category_name}_statistics')
+        # decoding the string in utf-8 format
+        response_string = response_bstring.decode('utf-8')
+        # evaluate the string and convert it to valid data structure
+        response = ast.literal_eval(response_string)
+    except : 
+        print("Failed to convert the response string")
+
     # returning the response in json format
     return jsonable_encoder(response)
 
@@ -94,10 +99,18 @@ def get_plot(category_name: str, Authorize: AuthJWT = Depends()):
     if category_name not in categories:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"Category '{category_name}' not found")
-
+    
+    
     # fetching plot's json string from redis
-    response_string = redis_client.get(f'{category_name}_plot')
-    response = json.loads(response_string)
+    try:
+        response_string = redis_client.get(f'{category_name}_plot')
+        response = json.loads(response_string)
+    except :
+        print("Failed to convert response string")
+        return
+
+        
+
     # returning the response in json format
     return jsonable_encoder(response)
 
